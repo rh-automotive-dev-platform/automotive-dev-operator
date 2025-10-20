@@ -1,0 +1,28 @@
+apiVersion: automotive.sdv.cloud.redhat.com/v1
+kind: ImageBuild
+metadata:
+  labels:
+    app.kubernetes.io/name: automotive-dev-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: imagebuild-sample
+  annotations:
+    description: >
+      Example ImageBuild CR. The architecture can be set to any supported value like
+      "aarch64", "x86_64", etc. See your build platform's documentation for supported values.
+spec:
+  #architecture: "arm64"
+  architecture: "amd64"
+  distro: "cs9"
+  target: "qemu"
+  mode: "image"
+  exportFormat: "qcow2"
+  #storageClass: "lvms-vg1"  # use cluster default if not specified
+  automotiveImageBuilder: "quay.io/centos-sig-automotive/automotive-image-builder:1.0.0"
+  manifestConfigMap: mpp
+  serveArtifact: false
+  serveExpiryHours: 24
+  #runtimeClassName: "kata"
+# publishers:
+#     registry:
+#       repositoryUrl: "quay.io/bzlotnik/automotive-image:latest"
+#       secret: "registry-credentials"

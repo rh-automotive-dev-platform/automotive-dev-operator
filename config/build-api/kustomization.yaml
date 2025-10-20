@@ -1,0 +1,18 @@
+resources:
+- deployment.yaml
+- service.yaml
+- route.yaml
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+images:
+- name: controller
+  newName: quay.io/rh-sdv-cloud/automotive-dev-operator
+  newTag: latest
+
+secretGenerator:
+- name: build-api-oauth-proxy
+  literals:
+  - cookie-secret=j370XdGMiTE0d5q04UwNgrGYDQYcj4VJHtF7O1CUIrc=
+

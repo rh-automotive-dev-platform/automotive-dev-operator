@@ -1,0 +1,36 @@
+apiVersion: automotive.sdv.cloud.redhat.com/v1
+kind: Image
+metadata:
+  labels:
+    app.kubernetes.io/name: ado
+    app.kubernetes.io/managed-by: kustomize
+  name: image-sample
+spec:
+  distro: "autosd"
+  target: "qemu"
+  architecture: "x86_64"
+  exportFormat: "qcow2"
+  mode: "image"
+  version: "1.0.0"
+  description: "Sample AutoSD QEMU image"
+  tags:
+    - "autosd"
+    - "qemu"
+    - "automotive"
+  location:
+    type: "registry"
+    registry:
+      url: "quay.io/automotive/autosd-qemu:1.0.0"
+      digest: "sha256:abcd1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab"
+      secretRef: "registry-credentials"
+  size:
+    compressedBytes: 1073741824    # 1GB
+    uncompressedBytes: 5368709120  # 5GB
+    virtualBytes: 21474836480     # 20GB
+  metadata:
+    createdBy: "automotive-dev-operator"
+    labels:
+      "automotive.io/distro": "autosd"
+      "automotive.io/arch": "x86_64"
+    annotations:
+      "automotive.io/build-date": "2025-01-15T10:30:00Z"

@@ -1,0 +1,74 @@
+apiVersion: automotive.sdv.cloud.redhat.com/v1
+kind: Image
+metadata:
+  labels:
+    app.kubernetes.io/name: ado
+    app.kubernetes.io/managed-by: kustomize
+  name: image-registry-sample-2
+spec:
+  distro: "fedora-40"
+  target: "edge-simplified-installer"
+  architecture: "aarch64"
+  exportFormat: "iso"
+  mode: "image"
+  version: "2.0.1"
+  description: "Fedora 40 Edge Simplified Installer for ARM64"
+  tags:
+    - "fedora-40"
+    - "edge"
+    - "installer"
+    - "arm64"
+  location:
+    type: "registry"
+    registry:
+      url: "quay.io/automotive/fedora-40-edge-installer:2.0.1-aarch64"
+      digest: "sha256:def456789012345678901234567890123456789012345678901234567890cdef"
+      secretRef: "registry-credentials"
+  size:
+    compressedBytes: 2147483648    # 2GB
+    uncompressedBytes: 2147483648  # 2GB (ISO is not compressed)
+  metadata:
+    createdBy: "build-system"
+    buildDate: "2025-01-10T15:45:30Z"
+    labels:
+      "automotive.io/distro": "fedora-40"
+      "automotive.io/arch": "aarch64"
+      "automotive.io/type": "installer"
+---
+apiVersion: automotive.sdv.cloud.redhat.com/v1
+kind: Image
+metadata:
+  labels:
+    app.kubernetes.io/name: ado
+    app.kubernetes.io/managed-by: kustomize
+  name: image-registry-sample-3
+spec:
+  distro: "cs9"
+  target: "edge-commit"
+  architecture: "x86_64"
+  exportFormat: "image"
+  mode: "image"
+  version: "3.1.0"
+  description: "CentOS Stream 9 Edge Commit stored in Container Registry"
+  tags:
+    - "centos-stream-9"
+    - "edge"
+    - "commit"
+  location:
+    type: "registry"
+    registry:
+      url: "quay.io/automotive/cs9-edge-commit:3.1.0-x86_64"
+      digest: "sha256:abcdef123456789012345678901234567890123456789012345678901234abcd"
+      secretRef: "registry-credentials"
+  size:
+    compressedBytes: 536870912     # 512MB compressed
+    uncompressedBytes: 3221225472  # 3GB uncompressed
+    virtualBytes: 10737418240     # 10GB virtual
+  metadata:
+    createdBy: "ci-pipeline"
+    sourceImageBuild: "cs9-edge-commit-build-123"
+    buildDate: "2025-01-12T08:20:15Z"
+    labels:
+      "automotive.io/distro": "cs9"
+      "automotive.io/arch": "x86_64"
+      "automotive.io/type": "edge-commit"

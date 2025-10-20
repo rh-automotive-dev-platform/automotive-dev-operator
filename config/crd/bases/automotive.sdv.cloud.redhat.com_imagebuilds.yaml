@@ -1,0 +1,166 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.16.1
+  name: imagebuilds.automotive.sdv.cloud.redhat.com
+spec:
+  group: automotive.sdv.cloud.redhat.com
+  names:
+    kind: ImageBuild
+    listKind: ImageBuildList
+    plural: imagebuilds
+    singular: imagebuild
+  scope: Namespaced
+  versions:
+  - name: v1
+    schema:
+      openAPIV3Schema:
+        description: ImageBuild is the Schema for the imagebuilds API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: ImageBuildSpec defines the desired state of ImageBuild
+            properties:
+              architecture:
+                description: Architecture specifies the target architecture
+                type: string
+              automotiveImageBuilder:
+                description: AutomotiveImageBuilder specifies the image to use for
+                  building
+                type: string
+              compression:
+                default: gzip
+                description: Compression specifies the compression algorithm for artifacts
+                enum:
+                - lz4
+                - gzip
+                type: string
+              distro:
+                description: Distro specifies the distribution to build for (e.g.,
+                  "cs9")
+                type: string
+              envSecretRef:
+                description: |-
+                  EnvSecretRef is the name of the secret containing environment variables for the build
+                  These environment variables will be available during the build process and can be used
+                  for private registry authentication (e.g., REGISTRY_USERNAME, REGISTRY_PASSWORD, REGISTRY_AUTH_FILE)
+                type: string
+              exportFormat:
+                description: ExportFormat specifies the output format (image, qcow2)
+                type: string
+              exposeRoute:
+                description: ExposeRoute indicates whether to expose the a route for
+                  the artifacts
+                type: boolean
+              inputFilesServer:
+                description: InputFilesServer indicates if there's a server for files
+                  referenced locally in the manifest
+                type: boolean
+              manifestConfigMap:
+                description: ManifestConfigMap specifies the name of the ConfigMap
+                  containing the manifest configuration
+                type: string
+              mode:
+                description: Mode specifies the build mode (package, image)
+                type: string
+              publishers:
+                description: Publishers defines where to publish the built artifacts
+                properties:
+                  registry:
+                    description: Registry configuration for publishing to an OCI registry
+                    properties:
+                      repositoryUrl:
+                        description: RepositoryURL is the URL of the OCI registry
+                          repository
+                        type: string
+                      secret:
+                        description: Secret is the name of the secret containing registry
+                          credentials
+                        type: string
+                    required:
+                    - repositoryUrl
+                    - secret
+                    type: object
+                type: object
+              runtimeClassName:
+                description: RuntimeClassName specifies the runtime class to use for
+                  the build pod
+                type: string
+              serveArtifact:
+                description: ServeArtifact determines whether to make the built artifact
+                  available for download
+                type: boolean
+              serveExpiryHours:
+                description: 'ServeExpiryHours specifies how long to serve the artifact
+                  before cleanup (default: 24)'
+                format: int32
+                type: integer
+              storageClass:
+                description: StorageClass is the name of the storage class to use
+                  for the build PVC
+                type: string
+              target:
+                description: Target specifies the build target (e.g., "qemu")
+                type: string
+            type: object
+          status:
+            description: ImageBuildStatus defines the observed state of ImageBuild
+            properties:
+              artifactFileName:
+                description: ArtifactFileName is the name of the artifact file inside
+                  the PVC
+                type: string
+              artifactPath:
+                description: ArtifactPath is the path inside the PVC where the artifact
+                  is stored
+                type: string
+              artifactURL:
+                description: ArtifactURL is the route URL created to expose the artifacts
+                type: string
+              completionTime:
+                description: CompletionTime is when the build finished
+                format: date-time
+                type: string
+              message:
+                description: Message provides more detail about the current phase
+                type: string
+              phase:
+                description: Phase represents the current phase of the build (Building,
+                  Completed, Failed)
+                type: string
+              pvcName:
+                description: PVCName is the name of the PVC where the artifact is
+                  stored
+                type: string
+              startTime:
+                description: StartTime is when the build started
+                format: date-time
+                type: string
+              taskRunName:
+                description: TaskRunName is the name of the active TaskRun for this
+                  build
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

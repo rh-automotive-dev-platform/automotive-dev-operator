@@ -1,0 +1,14 @@
+apiVersion: automotive.sdv.cloud.redhat.com/v1
+kind: AutomotiveDev
+metadata:
+  labels:
+    app.kubernetes.io/name: automotive-dev-operator
+    app.kubernetes.io/managed-by: kustomize
+    environment: development
+  name: automotive-dev
+  namespace: automotive-dev-operator-system
+spec:
+  buildConfig:
+    #     useMemoryVolumes: true
+    #     memoryVolumeSize: "8Gi"
+    pvcSize: "8Gi"

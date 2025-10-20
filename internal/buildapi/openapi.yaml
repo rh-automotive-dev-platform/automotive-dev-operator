@@ -1,0 +1,278 @@
+openapi: 3.0.3
+info:
+  title: Automotive Build API
+  version: 1.0.0
+servers:
+  - url: /
+paths:
+  /v1/healthz:
+    get:
+      summary: Health check
+      operationId: healthz
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /v1/builds:
+    get:
+      summary: List builds
+      operationId: listBuilds
+      responses:
+        '200':
+          description: List of builds
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BuildListItem'
+    post:
+      summary: Create a build
+      operationId: createBuild
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildRequest'
+      responses:
+        '202':
+          description: Build accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildResponse'
+        '400':
+          description: Invalid input
+  /v1/builds/{name}:
+    parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+        required: true
+    get:
+      summary: Get build status
+      operationId: getBuild
+      responses:
+        '200':
+          description: Build status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildResponse'
+        '404':
+          description: Not found
+  /v1/builds/{name}/logs:
+    parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: follow
+        schema:
+          type: boolean
+        required: false
+        description: If true, stream logs
+    get:
+      summary: Stream build logs
+      operationId: streamLogs
+      responses:
+        '200':
+          description: Log stream
+          content:
+            text/plain:
+              schema:
+                type: string
+        '503':
+          description: Logs not available yet
+          content:
+            text/plain:
+              schema:
+                type: string
+  /v1/builds/{name}/uploads:
+    parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+        required: true
+    post:
+      summary: Upload local files referenced by manifest
+      operationId: uploadFiles
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Upload complete
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '503':
+          description: Upload pod not ready
+          content:
+            text/plain:
+              schema:
+                type: string
+  /v1/builds/{name}/template:
+    parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+        required: true
+    get:
+      summary: Get a build's inputs as a template
+      operationId: getBuildTemplate
+      responses:
+        '200':
+          description: Build template
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildTemplateResponse'
+        '404':
+          description: Not found
+    parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+        required: true
+    get:
+      summary: Download built artifact
+      operationId: downloadArtifact
+      responses:
+        '200':
+          description: Artifact stream
+          headers:
+            Content-Disposition:
+              description: Suggested filename for download
+              schema:
+                type: string
+            Content-Length:
+              description: Artifact size in bytes (when known)
+              schema:
+                type: string
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '409':
+          description: Build not completed
+          content:
+            text/plain:
+              schema:
+                type: string
+        '503':
+          description: Artifact pod not ready
+          content:
+            text/plain:
+              schema:
+                type: string
+components:
+  schemas:
+    BuildRequest:
+      type: object
+      required: [name, manifest]
+      properties:
+        name:
+          type: string
+        manifest:
+          type: string
+          description: Manifest YAML content
+        manifestFileName:
+          type: string
+          default: manifest.aib.yml
+        distro:
+          type: string
+        target:
+          type: string
+        architecture:
+          type: string
+        exportFormat:
+          type: string
+        mode:
+          type: string
+        automotiveImageBuilder:
+          type: string
+          default: quay.io/centos-sig-automotive/automotive-image-builder:1.0.0
+        storageClass:
+          type: string
+        runtimeClassName:
+          type: string
+        customDefs:
+          type: array
+          items:
+            type: string
+        aibExtraArgs:
+          type: array
+          items:
+            type: string
+        serveArtifact:
+          type: boolean
+          description: Create artifact serving pod on completion
+        exposeRoute:
+          type: boolean
+          description: Create external route/URL (OpenShift)
+    BuildResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        phase:
+          type: string
+        message:
+          type: string
+        requestedBy:
+          type: string
+          nullable: true
+        artifactURL:
+          type: string
+          nullable: true
+        artifactFileName:
+          type: string
+          nullable: true
+    BuildListItem:
+      type: object
+      properties:
+        name:
+          type: string
+        requestedBy:
+          type: string
+          nullable: true
+    BuildTemplateResponse:
+      allOf:
+        - $ref: '#/components/schemas/BuildRequest'
+        - type: object
+          properties:
+            sourceFiles:
+              type: array
+              items:
+                type: string
+        phase:
+          type: string
+        message:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+

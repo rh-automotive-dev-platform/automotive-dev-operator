@@ -1,0 +1,27 @@
+# permissions for end users to edit images.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: ado
+    app.kubernetes.io/managed-by: kustomize
+  name: image-editor-role
+rules:
+- apiGroups:
+  - automotive.sdv.cloud.redhat.com
+  resources:
+  - images
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - automotive.sdv.cloud.redhat.com
+  resources:
+  - images/status
+  verbs:
+  - get

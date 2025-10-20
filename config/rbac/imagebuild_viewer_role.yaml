@@ -1,0 +1,23 @@
+# permissions for end users to view imagebuilds.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: automotive-dev-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: imagebuild-viewer-role
+rules:
+- apiGroups:
+  - automotive.sdv.cloud.redhat.com
+  resources:
+  - imagebuilds
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - automotive.sdv.cloud.redhat.com
+  resources:
+  - imagebuilds/status
+  verbs:
+  - get
