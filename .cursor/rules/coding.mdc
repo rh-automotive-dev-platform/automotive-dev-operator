@@ -1,0 +1,9 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+Do not add tests or documentation without being explicitly asked.
+Do not add emojies.
+Keep summary short and avoid emojies.
