@@ -100,59 +100,6 @@ spec:
   apiservicedefinitions: {}
   customresourcedefinitions:
     owned:
-    - description: AutomotiveDevConfig is the Schema for the automotivedevconfigs
-        API
-      displayName: Automotive Dev Config
-      kind: AutomotiveDevConfig
-      name: automotivedevconfigs.automotive.sdv.cloud.redhat.com
-      resources:
-      - kind: ConfigMap
-        name: ""
-        version: v1
-      - kind: ServiceAccount
-        name: ""
-        version: v1
-      - kind: ClusterRoleBinding
-        name: ""
-        version: v1
-      specDescriptors:
-      - description: BuildConfig defines the global configuration for build operations
-        displayName: Build Configuration
-        path: buildConfig
-      - description: PVCSize specifies the size for persistent volume claims
-        displayName: PVC Size
-        path: buildConfig.pvcSize
-      - description: ServeExpiryHours specifies how long to serve build artifacts
-        displayName: Serve Expiry Hours
-        path: buildConfig.serveExpiryHours
-        x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:number
-      - description: UseMemoryVolumes determines whether to use memory-backed volumes
-        displayName: Use Memory Volumes
-        path: buildConfig.useMemoryVolumes
-        x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:booleanSwitch
-      - description: MemoryVolumeSize specifies the size limit for memory-backed volumes
-        displayName: Memory Volume Size
-        path: buildConfig.memoryVolumeSize
-      - description: RuntimeClassName specifies the runtime class for build pods
-        displayName: Runtime Class Name
-        path: buildConfig.runtimeClassName
-      statusDescriptors:
-      - description: Phase represents the current phase of the environment
-        displayName: Phase
-        path: phase
-        x-descriptors:
-        - urn:alm:descriptor:io.kubernetes.phase
-      - description: Message provides more detail about the current phase
-        displayName: Message
-        path: message
-      - description: LastUpdated is when the status was last updated
-        displayName: Last Updated
-        path: lastUpdated
-        x-descriptors:
-        - urn:alm:descriptor:text
-      version: v1
     - description: Image is the Schema for the images API
       displayName: Image
       kind: Image
@@ -187,6 +134,12 @@ spec:
         x-descriptors:
         - urn:alm:descriptor:io.kubernetes.phase
       version: v1
+    - description: AutomotiveDevConfig is the Schema for the automotivedevconfigs
+        API
+      displayName: Automotive Dev Config
+      kind: AutomotiveDevConfig
+      name: automotivedevconfigs.automotive.sdv.cloud.redhat.com
+      version: v1
     - description: ImageBuild is the Schema for the imagebuilds API
       displayName: Image Build
       kind: ImageBuild
@@ -203,13 +156,13 @@ spec:
       deployments: null
     strategy: ""
   installModes:
-  - supported: false
-    type: OwnNamespace
-  - supported: false
-    type: SingleNamespace
-  - supported: false
-    type: MultiNamespace
   - supported: true
+    type: OwnNamespace
+  - supported: true
+    type: SingleNamespace
+  - supported: true
+    type: MultiNamespace
+  - supported: false
     type: AllNamespaces
   keywords:
   - automotive
