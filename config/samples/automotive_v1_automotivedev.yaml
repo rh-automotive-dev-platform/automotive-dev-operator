@@ -1,5 +1,5 @@
 apiVersion: automotive.sdv.cloud.redhat.com/v1
-kind: AutomotiveDev
+kind: AutomotiveDevConfig
 metadata:
   labels:
     app.kubernetes.io/name: automotive-dev-operator

@@ -834,7 +834,7 @@ func createBuild(c *gin.Context) {
 
 	serveExpiryHours := int32(24)
 	{
-		autoDev := &automotivev1.AutomotiveDev{}
+		autoDev := &automotivev1.AutomotiveDevConfig{}
 		if err := k8sClient.Get(ctx, types.NamespacedName{Name: "automotive-dev", Namespace: namespace}, autoDev); err == nil {
 			if autoDev.Spec.BuildConfig != nil && autoDev.Spec.BuildConfig.ServeExpiryHours > 0 {
 				serveExpiryHours = autoDev.Spec.BuildConfig.ServeExpiryHours

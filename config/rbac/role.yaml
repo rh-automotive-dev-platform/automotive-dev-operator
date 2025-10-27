@@ -52,7 +52,7 @@ rules:
 - apiGroups:
   - automotive.sdv.cloud.redhat.com
   resources:
-  - automotivedevs
+  - automotivedevconfigs
   - imagebuilds
   - images
   verbs:
@@ -66,7 +66,7 @@ rules:
 - apiGroups:
   - automotive.sdv.cloud.redhat.com
   resources:
-  - automotivedevs/finalizers
+  - automotivedevconfigs/finalizers
   - imagebuilds/finalizers
   - images/finalizers
   verbs:
@@ -74,7 +74,7 @@ rules:
 - apiGroups:
   - automotive.sdv.cloud.redhat.com
   resources:
-  - automotivedevs/status
+  - automotivedevconfigs/status
   - imagebuilds/status
   - images/status
   verbs:

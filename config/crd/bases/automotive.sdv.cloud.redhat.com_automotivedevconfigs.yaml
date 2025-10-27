@@ -4,20 +4,21 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.1
-  name: automotivedevs.automotive.sdv.cloud.redhat.com
+  name: automotivedevconfigs.automotive.sdv.cloud.redhat.com
 spec:
   group: automotive.sdv.cloud.redhat.com
   names:
-    kind: AutomotiveDev
-    listKind: AutomotiveDevList
-    plural: automotivedevs
-    singular: automotivedev
+    kind: AutomotiveDevConfig
+    listKind: AutomotiveDevConfigList
+    plural: automotivedevconfigs
+    singular: automotivedevconfig
   scope: Namespaced
   versions:
   - name: v1
     schema:
       openAPIV3Schema:
-        description: AutomotiveDev is the Schema for the automotivedevs API
+        description: AutomotiveDevConfig is the Schema for the automotivedevconfigs
+          API
         properties:
           apiVersion:
             description: |-
@@ -37,7 +38,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: AutomotiveDevSpec defines the desired state of AutomotiveDev
+            description: AutomotiveDevConfigSpec defines the desired state of AutomotiveDevConfig
             properties:
               buildConfig:
                 description: BuildConfig defines the global configuration for build
@@ -71,7 +72,7 @@ spec:
                 type: object
             type: object
           status:
-            description: AutomotiveDevStatus defines the observed state of AutomotiveDev
+            description: AutomotiveDevConfigStatus defines the observed state of AutomotiveDevConfig
             properties:
               lastUpdated:
                 description: LastUpdated is when the status was last updated
@@ -81,7 +82,7 @@ spec:
                 description: Message provides more detail about the current phase
                 type: string
               phase:
-                description: Phase represents the current phase of the AutomotiveDev
+                description: Phase represents the current phase of the AutomotiveDevConfig
                   environment (Ready, Pending, Failed)
                 type: string
             type: object

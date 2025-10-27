@@ -144,15 +144,15 @@ func main() {
 
 	autoDevReady := make(chan struct{})
 
-	autoDevReconciler := &automotivedev.AutomotiveDevReconciler{
+	autoDevReconciler := &automotivedev.AutomotiveDevConfigReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
-		Log:    ctrl.Log.WithName("controllers").WithName("AutomotiveDev"),
+		Log:    ctrl.Log.WithName("controllers").WithName("AutomotiveDevConfig"),
 		Ready:  autoDevReady,
 	}
 
 	if err = autoDevReconciler.SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "AutomotiveDev")
+		setupLog.Error(err, "unable to create controller", "controller", "AutomotiveDevConfig")
 		os.Exit(1)
 	}
 
@@ -175,7 +175,7 @@ func main() {
 
 	go func() {
 		<-autoDevReady
-		setupLog.Info("AutomotiveDev is ready, starting ImageBuild controller")
+		setupLog.Info("AutomotiveDevConfig is ready, starting ImageBuild controller")
 
 		if err := imageBuildReconciler.SetupWithManager(mgr); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ImageBuild")

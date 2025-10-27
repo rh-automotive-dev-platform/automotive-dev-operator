@@ -1,16 +1,16 @@
-# permissions for end users to edit automotivedevs.
+# permissions for end users to edit automotivedevconfigs.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: automotive-dev-operator
     app.kubernetes.io/managed-by: kustomize
-  name: automotivedev-editor-role
+  name: automotivedevconfig-editor-role
 rules:
 - apiGroups:
   - automotive.sdv.cloud.redhat.com
   resources:
-  - automotivedevs
+  - automotivedevconfigs
   verbs:
   - create
   - delete
@@ -22,6 +22,6 @@ rules:
 - apiGroups:
   - automotive.sdv.cloud.redhat.com
   resources:
-  - automotivedevs/status
+  - automotivedevconfigs/status
   verbs:
   - get

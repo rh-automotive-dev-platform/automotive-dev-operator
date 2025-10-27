@@ -1,16 +1,16 @@
-# permissions for end users to view automotivedevs.
+# permissions for end users to view automotivedevconfigs.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: automotive-dev-operator
     app.kubernetes.io/managed-by: kustomize
-  name: automotivedev-viewer-role
+  name: automotivedevconfig-viewer-role
 rules:
 - apiGroups:
   - automotive.sdv.cloud.redhat.com
   resources:
-  - automotivedevs
+  - automotivedevconfigs
   verbs:
   - get
   - list
@@ -18,6 +18,6 @@ rules:
 - apiGroups:
   - automotive.sdv.cloud.redhat.com
   resources:
-  - automotivedevs/status
+  - automotivedevconfigs/status
   verbs:
   - get

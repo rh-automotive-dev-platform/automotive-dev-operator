@@ -2,7 +2,97 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: ClusterServiceVersion
 metadata:
   annotations:
-    alm-examples: '[]'
+    alm-examples: |-
+      [
+        {
+          "apiVersion": "automotive.sdv.cloud.redhat.com/v1",
+          "kind": "AutomotiveDevConfig",
+          "metadata": {
+            "labels": {
+              "app.kubernetes.io/managed-by": "kustomize",
+              "app.kubernetes.io/name": "automotive-dev-operator",
+              "environment": "development"
+            },
+            "name": "automotive-dev",
+            "namespace": "automotive-dev-operator-system"
+          },
+          "spec": {
+            "buildConfig": {
+              "pvcSize": "8Gi"
+            }
+          },
+          "status": {
+            "phase": "Ready",
+            "message": "AutomotiveDevConfig environment is ready",
+            "lastUpdated": "2024-01-15T10:30:00Z"
+          }
+        },
+        {
+          "apiVersion": "automotive.sdv.cloud.redhat.com/v1",
+          "kind": "ImageBuild",
+          "metadata": {
+            "annotations": {
+              "description": "Example ImageBuild CR. The architecture can be set to any supported value like \"aarch64\", \"x86_64\", etc. See your build platform's documentation for supported values.\n"
+            },
+            "labels": {
+              "app.kubernetes.io/managed-by": "kustomize",
+              "app.kubernetes.io/name": "automotive-dev-operator"
+            },
+            "name": "imagebuild-sample"
+          },
+          "spec": {
+            "architecture": "amd64",
+            "automotiveImageBuilder": "quay.io/centos-sig-automotive/automotive-image-builder:1.0.0",
+            "distro": "cs9",
+            "exportFormat": "qcow2",
+            "manifestConfigMap": "mpp",
+            "mode": "image",
+            "serveArtifact": false,
+            "serveExpiryHours": 24,
+            "target": "qemu"
+          },
+          "status": {
+            "phase": "Completed",
+            "message": "Image build completed successfully",
+            "taskRunName": "imagebuild-sample-run-abc123",
+            "pvcName": "imagebuild-sample-pvc",
+            "artifactPath": "/workspace/output/image.qcow2",
+            "artifactFileName": "image.qcow2",
+            "startTime": "2024-01-15T10:00:00Z",
+            "completionTime": "2024-01-15T10:25:00Z"
+          }
+        },
+        {
+          "apiVersion": "automotive.sdv.cloud.redhat.com/v1",
+          "kind": "Image",
+          "metadata": {
+            "labels": {
+              "app.kubernetes.io/managed-by": "kustomize",
+              "app.kubernetes.io/name": "automotive-dev-operator"
+            },
+            "name": "image-sample"
+          },
+          "spec": {
+            "architecture": "amd64",
+            "distro": "cs9",
+            "exportFormat": "qcow2",
+            "target": "qemu",
+            "location": {
+              "type": "registry",
+              "registry": {
+                "url": "quay.io/example/my-image:latest"
+              }
+            }
+          },
+          "status": {
+            "phase": "Available",
+            "message": "Image is available and verified",
+            "lastVerified": "2024-01-15T10:30:00Z",
+            "lastAccessed": "2024-01-15T11:00:00Z",
+            "accessCount": 5
+          }
+        }
+      ]
     capabilities: Basic Install
   name: automotive-dev-operator.v0.0.0
   namespace: placeholder
@@ -10,10 +100,92 @@ spec:
   apiservicedefinitions: {}
   customresourcedefinitions:
     owned:
-    - description: AutomotiveDev is the Schema for the automotivedevs API
-      displayName: Automotive Dev
-      kind: AutomotiveDev
-      name: automotivedevs.automotive.sdv.cloud.redhat.com
+    - description: AutomotiveDevConfig is the Schema for the automotivedevconfigs
+        API
+      displayName: Automotive Dev Config
+      kind: AutomotiveDevConfig
+      name: automotivedevconfigs.automotive.sdv.cloud.redhat.com
+      resources:
+      - kind: ConfigMap
+        name: ""
+        version: v1
+      - kind: ServiceAccount
+        name: ""
+        version: v1
+      - kind: ClusterRoleBinding
+        name: ""
+        version: v1
+      specDescriptors:
+      - description: BuildConfig defines the global configuration for build operations
+        displayName: Build Configuration
+        path: buildConfig
+      - description: PVCSize specifies the size for persistent volume claims
+        displayName: PVC Size
+        path: buildConfig.pvcSize
+      - description: ServeExpiryHours specifies how long to serve build artifacts
+        displayName: Serve Expiry Hours
+        path: buildConfig.serveExpiryHours
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:number
+      - description: UseMemoryVolumes determines whether to use memory-backed volumes
+        displayName: Use Memory Volumes
+        path: buildConfig.useMemoryVolumes
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:booleanSwitch
+      - description: MemoryVolumeSize specifies the size limit for memory-backed volumes
+        displayName: Memory Volume Size
+        path: buildConfig.memoryVolumeSize
+      - description: RuntimeClassName specifies the runtime class for build pods
+        displayName: Runtime Class Name
+        path: buildConfig.runtimeClassName
+      statusDescriptors:
+      - description: Phase represents the current phase of the environment
+        displayName: Phase
+        path: phase
+        x-descriptors:
+        - urn:alm:descriptor:io.kubernetes.phase
+      - description: Message provides more detail about the current phase
+        displayName: Message
+        path: message
+      - description: LastUpdated is when the status was last updated
+        displayName: Last Updated
+        path: lastUpdated
+        x-descriptors:
+        - urn:alm:descriptor:text
+      version: v1
+    - description: Image is the Schema for the images API
+      displayName: Image
+      kind: Image
+      name: images.automotive.sdv.cloud.redhat.com
+      resources:
+      - kind: ConfigMap
+        name: ""
+        version: v1
+      specDescriptors:
+      - description: Architecture specifies the target architecture
+        displayName: Architecture
+        path: architecture
+      - description: Distro specifies the distribution
+        displayName: Distribution
+        path: distro
+      - description: ExportFormat specifies the output format
+        displayName: Export Format
+        path: exportFormat
+      - description: Target specifies the build target
+        displayName: Target
+        path: target
+      - description: Location defines where the image is stored
+        displayName: Location
+        path: location
+      - description: Type specifies the storage type
+        displayName: Location Type
+        path: location.type
+      statusDescriptors:
+      - description: Phase represents the current phase of the image
+        displayName: Phase
+        path: phase
+        x-descriptors:
+        - urn:alm:descriptor:io.kubernetes.phase
       version: v1
     - description: ImageBuild is the Schema for the imagebuilds API
       displayName: Image Build
@@ -45,6 +217,7 @@ spec:
   - name: Automotive Dev Operator
     url: https://automotive-dev-operator.domain
   maturity: alpha
+  minKubeVersion: 1.26.0
   provider:
     name: Red Hat
   version: 0.0.0

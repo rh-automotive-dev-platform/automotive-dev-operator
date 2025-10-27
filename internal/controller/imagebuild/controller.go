@@ -309,10 +309,10 @@ func (r *ImageBuildReconciler) createBuildTaskRun(ctx context.Context, imageBuil
 	log := r.Log.WithValues("imagebuild", types.NamespacedName{Name: imageBuild.Name, Namespace: imageBuild.Namespace})
 	log.Info("Creating TaskRun for ImageBuild")
 
-	autoDev := &automotivev1.AutomotiveDev{}
+	autoDev := &automotivev1.AutomotiveDevConfig{}
 	err := r.Get(ctx, types.NamespacedName{Name: "automotive-dev", Namespace: OperatorNamespace}, autoDev)
 	if err != nil && !errors.IsNotFound(err) {
-		return fmt.Errorf("failed to get AutomotiveDev configuration: %w", err)
+		return fmt.Errorf("failed to get AutomotiveDevConfig configuration: %w", err)
 	}
 
 	var buildConfig *automotivev1.BuildConfig
@@ -989,7 +989,7 @@ func (r *ImageBuildReconciler) getOrCreateWorkspacePVC(ctx context.Context, imag
 			"old-pvc", imageBuild.Status.PVCName)
 	}
 
-	autoDev := &automotivev1.AutomotiveDev{}
+	autoDev := &automotivev1.AutomotiveDevConfig{}
 	err := r.Get(ctx, types.NamespacedName{Name: "automotive-dev", Namespace: OperatorNamespace}, autoDev)
 
 	storageSize := resource.MustParse("8Gi")
