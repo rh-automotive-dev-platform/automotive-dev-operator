@@ -5,16 +5,14 @@ resources:
   - deployment.yaml
   - service.yaml
   - route.yaml
-
-secretGenerator:
-  - name: webui-oauth-proxy
-    literals:
-      - cookie-secret=YWFhYWFhYWFhYWFhYWFhYQ==
+  - secret.yaml
 
 configMapGenerator:
-  - files:
+  - name: webui-nginx-config
+    files:
       - nginx.conf
-    name: webui-nginx-config
+    options:
+      disableNameSuffixHash: true
 
 images:
   - name: quay.io/rh-sdv-cloud/aib-webui

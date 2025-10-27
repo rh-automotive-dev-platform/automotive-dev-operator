@@ -41,13 +41,13 @@ var _ = Describe("AutomotiveDev Controller", func() {
 			Name:      resourceName,
 			Namespace: "default", // TODO(user):Modify as needed
 		}
-		av := &automotivev1.AutomotiveDev{}
+		av := &automotivev1.AutomotiveDevConfig{}
 
 		BeforeEach(func() {
 			By("creating the custom resource for the Kind AutomotiveDev")
 			err := k8sClient.Get(ctx, typeNamespacedName, av)
 			if err != nil && errors.IsNotFound(err) {
-				resource := &automotivev1.AutomotiveDev{
+				resource := &automotivev1.AutomotiveDevConfig{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      resourceName,
 						Namespace: "default",
@@ -60,7 +60,7 @@ var _ = Describe("AutomotiveDev Controller", func() {
 
 		AfterEach(func() {
 			// TODO(user): Cleanup logic after each test, like removing the resource instance.
-			resource := &automotivev1.AutomotiveDev{}
+			resource := &automotivev1.AutomotiveDevConfig{}
 			err := k8sClient.Get(ctx, typeNamespacedName, resource)
 			Expect(err).NotTo(HaveOccurred())
 
@@ -69,7 +69,7 @@ var _ = Describe("AutomotiveDev Controller", func() {
 		})
 		It("should successfully reconcile the resource", func() {
 			By("Reconciling the created resource")
-			controllerReconciler := &automotivedev.AutomotiveDevReconciler{
+			controllerReconciler := &automotivedev.AutomotiveDevConfigReconciler{
 				Client: k8sClient,
 				Scheme: k8sClient.Scheme(),
 			}
