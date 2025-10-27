@@ -4,7 +4,7 @@ import (
 	_ "embed"
 	"time"
 
-	automotivev1 "github.com/rh-sdv-cloud-incubator/automotive-dev-operator/api/v1"
+	automotivev1 "github.com/rh-automotive-dev-platform/automotive-dev-operator/api/v1"
 	tektonv1 "github.com/tektoncd/pipeline/pkg/apis/pipeline/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"

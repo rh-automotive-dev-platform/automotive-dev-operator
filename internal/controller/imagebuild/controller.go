@@ -8,8 +8,8 @@ import (
 
 	"github.com/go-logr/logr"
 	routev1 "github.com/openshift/api/route/v1"
-	automotivev1 "github.com/rh-sdv-cloud-incubator/automotive-dev-operator/api/v1"
-	"github.com/rh-sdv-cloud-incubator/automotive-dev-operator/internal/common/tasks"
+	automotivev1 "github.com/rh-automotive-dev-platform/automotive-dev-operator/api/v1"
+	"github.com/rh-automotive-dev-platform/automotive-dev-operator/internal/common/tasks"
 	pod "github.com/tektoncd/pipeline/pkg/apis/pipeline/pod"
 	tektonv1 "github.com/tektoncd/pipeline/pkg/apis/pipeline/v1"
 	corev1 "k8s.io/api/core/v1"

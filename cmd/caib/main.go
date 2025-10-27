@@ -16,8 +16,8 @@ import (
 
 	"gopkg.in/yaml.v3"
 
-	buildapitypes "github.com/rh-sdv-cloud-incubator/automotive-dev-operator/internal/buildapi"
-	buildapiclient "github.com/rh-sdv-cloud-incubator/automotive-dev-operator/internal/buildapi/client"
+	buildapitypes "github.com/rh-automotive-dev-platform/automotive-dev-operator/internal/buildapi"
+	buildapiclient "github.com/rh-automotive-dev-platform/automotive-dev-operator/internal/buildapi/client"
 	progressbar "github.com/schollz/progressbar/v3"
 	"github.com/spf13/cobra"
 	"k8s.io/client-go/tools/clientcmd"

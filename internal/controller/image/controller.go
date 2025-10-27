@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/go-logr/logr"
-	automotivev1 "github.com/rh-sdv-cloud-incubator/automotive-dev-operator/api/v1"
+	automotivev1 "github.com/rh-automotive-dev-platform/automotive-dev-operator/api/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"

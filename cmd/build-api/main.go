@@ -11,7 +11,7 @@ import (
 	"github.com/go-logr/logr"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	"github.com/rh-sdv-cloud-incubator/automotive-dev-operator/internal/buildapi"
+	"github.com/rh-automotive-dev-platform/automotive-dev-operator/internal/buildapi"
 )
 
 func main() {

@@ -9,7 +9,7 @@ plugins:
   manifests.sdk.operatorframework.io/v2: {}
   scorecard.sdk.operatorframework.io/v2: {}
 projectName: automotive-dev-operator
-repo: github.com/rh-sdv-cloud-incubator/automotive-dev-operator
+repo: github.com/rh-automotive-dev-platform/automotive-dev-operator
 resources:
 - api:
     crdVersion: v1
@@ -18,7 +18,7 @@ resources:
   domain: sdv.cloud.redhat.com
   group: automotive
   kind: ImageBuild
-  path: github.com/rh-sdv-cloud-incubator/automotive-dev-operator/api/v1
+  path: github.com/rh-automotive-dev-platform/automotive-dev-operator/api/v1
   version: v1
 - api:
     crdVersion: v1
@@ -26,7 +26,7 @@ resources:
   controller: true
   domain: sdv.cloud.redhat.com
   group: automotive
-  kind: AutomotiveDev
-  path: github.com/rh-sdv-cloud-incubator/automotive-dev-operator/api/v1
+  kind: AutomotiveDevConfig
+  path: github.com/rh-automotive-dev-platform/automotive-dev-operator/api/v1
   version: v1
 version: "3"

@@ -24,7 +24,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/rh-sdv-cloud-incubator/automotive-dev-operator/test/utils"
+	"github.com/rh-automotive-dev-platform/automotive-dev-operator/test/utils"
 )
 
 const namespace = "automotive-dev-operator-system"

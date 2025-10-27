@@ -27,7 +27,7 @@ import (
 	"k8s.io/client-go/tools/remotecommand"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	automotivev1 "github.com/rh-sdv-cloud-incubator/automotive-dev-operator/api/v1"
+	automotivev1 "github.com/rh-automotive-dev-platform/automotive-dev-operator/api/v1"
 	authnv1 "k8s.io/api/authentication/v1"
 )
 
