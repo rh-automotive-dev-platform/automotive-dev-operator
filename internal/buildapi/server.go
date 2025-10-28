@@ -41,8 +41,6 @@ type APIServer struct {
 //go:embed openapi.yaml
 var embeddedOpenAPI []byte
 
-type ctxKeyReqID struct{}
-
 // NewAPIServer creates a new API server
 func NewAPIServer(addr string, logger logr.Logger) *APIServer {
 	// Gin mode should be controlled by environment, not by which constructor is used
@@ -613,35 +611,6 @@ func streamLogsSSE(c *gin.Context, name string) {
 
 	sendSSEEvent(c, "completed", "", "Log streaming completed")
 	c.Writer.Flush()
-}
-
-// convertImageBuildList converts a Kubernetes ImageBuildList to the API response format
-func convertImageBuildList(list *automotivev1.ImageBuildList) []BuildListItem {
-	resp := make([]BuildListItem, 0, len(list.Items))
-	for _, b := range list.Items {
-		resp = append(resp, convertImageBuildToListItem(&b))
-	}
-	return resp
-}
-
-// convertImageBuildToListItem converts a single ImageBuild to BuildListItem
-func convertImageBuildToListItem(b *automotivev1.ImageBuild) BuildListItem {
-	var startStr, compStr string
-	if b.Status.StartTime != nil {
-		startStr = b.Status.StartTime.Time.Format(time.RFC3339)
-	}
-	if b.Status.CompletionTime != nil {
-		compStr = b.Status.CompletionTime.Time.Format(time.RFC3339)
-	}
-	return BuildListItem{
-		Name:           b.Name,
-		Phase:          b.Status.Phase,
-		Message:        b.Status.Message,
-		RequestedBy:    b.Annotations["automotive.sdv.cloud.redhat.com/requested-by"],
-		CreatedAt:      b.CreationTimestamp.Time.Format(time.RFC3339),
-		StartTime:      startStr,
-		CompletionTime: compStr,
-	}
 }
 
 func sendSSEEvent(c *gin.Context, event, step, data string) {
@@ -1722,7 +1691,6 @@ func (a *APIServer) streamArtifactByFilename(c *gin.Context, name, filename stri
 		return
 	}
 
-	// Find the artifact pod
 	var artifactPod *corev1.Pod
 	deadline := time.Now().Add(2 * time.Minute)
 	for {
@@ -1795,11 +1763,9 @@ func (a *APIServer) streamArtifactByFilename(c *gin.Context, name, filename stri
 		return
 	}
 
-	// Set appropriate content type based on file extension
 	if strings.HasSuffix(strings.ToLower(base), ".lz4") {
 		c.Writer.Header().Set("Content-Type", "application/x-lz4")
 	} else if strings.Contains(strings.ToLower(base), ".tar.") {
-		// .tar.gz or .tar.lz4
 		if strings.HasSuffix(strings.ToLower(base), ".gz") {
 			c.Writer.Header().Set("Content-Type", "application/gzip")
 		} else {
@@ -1989,7 +1955,6 @@ func resolveRequester(c *gin.Context) string {
 		token = c.Request.Header.Get("X-Forwarded-Access-Token")
 	}
 
-	// Attempt TokenReview to obtain canonical username
 	if strings.TrimSpace(token) != "" {
 		cfg, err := getRESTConfigFromRequest(c)
 		if err == nil {
@@ -2005,9 +1970,5 @@ func resolveRequester(c *gin.Context) string {
 		}
 	}
 
-	// Last resort: consult proxy-provided header (not trusted, used only as fallback)
-	if u := strings.TrimSpace(c.Request.Header.Get("X-Forwarded-User")); u != "" {
-		return u
-	}
 	return "unknown"
 }
