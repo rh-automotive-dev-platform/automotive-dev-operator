@@ -392,3 +392,8 @@ fi
 if [ -n "$final_name" ]; then
   echo "$final_name" > /tekton/results/artifact-filename || true
 fi
+
+# Ensure all filesystem writes are flushed to disk before task completes
+echo "Syncing filesystem to ensure all artifacts are written..."
+sync
+echo "Filesystem sync completed"
