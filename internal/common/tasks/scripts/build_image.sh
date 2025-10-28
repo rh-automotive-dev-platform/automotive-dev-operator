@@ -390,7 +390,12 @@ if [ -z "$final_name" ]; then
   fi
 fi
 if [ -n "$final_name" ]; then
-  echo "$final_name" > /tekton/results/artifact-filename || true
+  echo "Writing artifact filename to Tekton result: $final_name"
+  echo "$final_name" > /tekton/results/artifact-filename || echo "Failed to write Tekton result"
+  echo "Verifying Tekton result file:"
+  cat /tekton/results/artifact-filename || echo "Failed to read Tekton result"
+else
+  echo "Warning: final_name is empty, no artifact filename will be recorded"
 fi
 
 # Ensure all filesystem writes are flushed to disk before task completes

@@ -3,7 +3,6 @@ package imagebuild
 import (
 	"context"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/go-logr/logr"
@@ -239,19 +238,12 @@ func (r *ImageBuildReconciler) checkBuildProgress(ctx context.Context, imageBuil
 	}
 
 	if isTaskRunSuccessful(taskRun) {
+		var artifactFileName string
 		for _, res := range taskRun.Status.TaskRunStatusFields.Results {
 			if res.Name == "artifact-filename" && res.Value.StringVal != "" {
-				fresh := &automotivev1.ImageBuild{}
-				if err := r.Get(ctx, types.NamespacedName{Name: imageBuild.Name, Namespace: imageBuild.Namespace}, fresh); err == nil {
-					patch := client.MergeFrom(fresh.DeepCopy())
-					fresh.Status.ArtifactFileName = res.Value.StringVal
-					_ = r.Status().Patch(ctx, fresh, patch)
-				}
+				artifactFileName = res.Value.StringVal
 				break
 			}
-		}
-		if err := r.updateStatus(ctx, imageBuild, "Completed", "Build completed successfully"); err != nil {
-			return ctrl.Result{RequeueAfter: time.Second * 5}, nil
 		}
 
 		if imageBuild.Spec.ServeArtifact {
@@ -263,12 +255,36 @@ func (r *ImageBuildReconciler) checkBuildProgress(ctx context.Context, imageBuil
 				if err := r.createArtifactServingResources(ctx, imageBuild); err != nil {
 					return ctrl.Result{}, err
 				}
-
-				return r.updateArtifactInfo(ctx, imageBuild)
 			}
+		}
 
+		fresh := &automotivev1.ImageBuild{}
+		if err := r.Get(ctx, types.NamespacedName{Name: imageBuild.Name, Namespace: imageBuild.Namespace}, fresh); err != nil {
+			return ctrl.Result{}, err
+		}
+
+		patch := client.MergeFrom(fresh.DeepCopy())
+
+		if artifactFileName != "" {
+			fresh.Status.ArtifactFileName = artifactFileName
+		}
+
+		fresh.Status.Phase = "Completed"
+		fresh.Status.Message = "Build completed successfully"
+		if fresh.Status.CompletionTime == nil {
+			now := metav1.Now()
+			fresh.Status.CompletionTime = &now
+		}
+
+		if err := r.Status().Patch(ctx, fresh, patch); err != nil {
+			return ctrl.Result{RequeueAfter: time.Second * 5}, nil
+		}
+
+		// Update artifact info after status is set
+		if imageBuild.Spec.ServeArtifact {
 			return r.updateArtifactInfo(ctx, imageBuild)
 		}
+
 		return ctrl.Result{}, nil
 	}
 
@@ -497,30 +513,30 @@ func (r *ImageBuildReconciler) updateArtifactInfo(ctx context.Context, imageBuil
 		return ctrl.Result{}, fmt.Errorf("no PVC name found in ImageBuild status")
 	}
 
-	var fileExtension string
-	switch latestImageBuild.Spec.ExportFormat {
-	case "image":
-		fileExtension = ".raw"
-	case "qcow2":
-		fileExtension = ".qcow2"
-	default:
-		fileExtension = fmt.Sprintf(".%s", latestImageBuild.Spec.ExportFormat)
-	}
+	// Only set ArtifactFileName if it's not already set (from Tekton results)
+	if latestImageBuild.Status.ArtifactFileName == "" {
+		var fileExtension string
+		switch latestImageBuild.Spec.ExportFormat {
+		case "image":
+			fileExtension = ".raw"
+		case "qcow2":
+			fileExtension = ".qcow2"
+		default:
+			fileExtension = fmt.Sprintf(".%s", latestImageBuild.Spec.ExportFormat)
+		}
 
-	fileName := strings.TrimSpace(latestImageBuild.Status.ArtifactFileName)
-	if fileName == "" {
-		fileName = fmt.Sprintf("%s-%s%s",
+		fileName := fmt.Sprintf("%s-%s%s",
 			latestImageBuild.Spec.Distro,
 			latestImageBuild.Spec.Target,
 			fileExtension)
+		latestImageBuild.Status.ArtifactFileName = fileName
 	}
 
-	log.Info("Setting artifact info", "pvc", pvcName, "fileName", fileName)
+	log.Info("Setting artifact info", "pvc", pvcName, "fileName", latestImageBuild.Status.ArtifactFileName)
 
 	patch := client.MergeFrom(latestImageBuild.DeepCopy())
 
 	latestImageBuild.Status.ArtifactPath = "/"
-	latestImageBuild.Status.ArtifactFileName = fileName
 
 	if err := r.Status().Patch(ctx, latestImageBuild, patch); err != nil {
 		log.Error(err, "Failed to patch status with artifact info")
